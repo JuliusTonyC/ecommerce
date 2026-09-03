@@ -55,16 +55,26 @@ function Dashboard() {
         <div className="dashboard-sections">
           <div className="dashboard-section">
             <h3>Quick Actions</h3>
-            <ul className="action-list">
-              <li><button className="action-btn">Edit Profile</button></li>
-              <li><button className="action-btn">Change Password</button></li>
-              <li><button className="action-btn">View Activity</button></li>
-              <li>
+            <div className="action-list">
+              <div>
+                <button className="action-btn" onClick={() => navigate('/settings')}>
+                  Edit Profile
+                </button>
+              </div>
+              <div>
+                <button className="action-btn" onClick={() => navigate('/settings')}>
+                  Change Password
+                </button>
+              </div>
+              <div>
+                <button className="action-btn">View Activity</button>
+              </div>
+              <div>
                 <button className="action-btn logout-btn" onClick={handleLogout}>
                   Logout
                 </button>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
 
           <div className="dashboard-section">
