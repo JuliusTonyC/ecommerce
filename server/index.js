@@ -15,28 +15,12 @@ if (!process.env.JWT_SECRET) {
 }
 
 // ==========================================
-// CORS — allows local dev AND your Vercel frontend
+// CORS — allow EVERYONE (safe because we use JWT headers, not cookies)
 // ==========================================
-const allowedOrigins = [
-  'http://localhost:5173',                       // local Vite dev server
-  'https://your-vercel-app.vercel.app'           // ← REPLACE THIS with your real Vercel URL
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like Postman, curl, mobile apps)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      console.log('Blocked by CORS:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
