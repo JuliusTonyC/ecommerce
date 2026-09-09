@@ -92,3 +92,22 @@
   font-size: 13px;
   color: #64748b;
 }
+
+
+.delete-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+}

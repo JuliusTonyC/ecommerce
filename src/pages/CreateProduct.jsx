@@ -83,7 +83,8 @@ function CreateProduct() {
             onChange={(e) => setDescription(e.target.value)}
             required
             placeholder="Describe the product..."
-            rows={3}
+            rows={4}
+            style={{ width: '100%' }}  /* fallback until CSS loads */
           />
         </div>
 
