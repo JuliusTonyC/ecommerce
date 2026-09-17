@@ -72,6 +72,11 @@ function Dashboard() {
                 </button>
               </div>
               <div>
+                <button className="action-btn" onClick={() => navigate('/my-products')}>
+                  My Products
+                </button>
+              </div>
+              <div>
                 <button className="action-btn" onClick={() => navigate('/create-product')}>
                   Create Product
                 </button>

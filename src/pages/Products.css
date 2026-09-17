@@ -69,7 +69,7 @@
   line-height: 1.5;
   margin-bottom: 12px;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  /* -webkit-line-clamp: 3; */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -93,10 +93,8 @@
   color: #64748b;
 }
 
-
 .delete-btn {
   width: 100%;
-  margin-top: 12px;
   padding: 10px;
   background-color: #dc2626;
   color: white;
@@ -111,3 +109,5 @@
 .delete-btn:hover {
   background-color: #b91c1c;
 }
+
+

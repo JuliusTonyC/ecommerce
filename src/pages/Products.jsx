@@ -10,44 +10,32 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_URL}/api/products`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to load products');
-      setProducts(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchProducts = async () => {
+      const url = `${API_URL}/api/products`;
+      console.log('Fetching from:', url); 
+
+      try {
+        const res = await fetch(url);
+        const text = await res.text(); 
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(`Server returned HTML instead of JSON. Status: ${res.status}. Make sure backend is running on ${API_URL}`);
+        }
+
+        if (!res.ok) throw new Error(data.message || 'Failed to load products');
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchProducts();
   }, []);
-
-  const handleDelete = async (id) => {
-    // Confirm before deleting
-    if (!window.confirm('Are you sure you want to delete this product?')) {
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_URL}/api/products/${id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to delete product');
-
-      // Remove deleted product from the list immediately
-      setProducts(products.filter((p) => p._id !== id));
-    } catch (err) {
-      setError(err.message);
-    }
-  };
 
   if (loading) return <div className="products-loading">Loading Products...</div>;
   if (error) return <div className="products-loading" style={{ color: '#dc2626' }}>Error: {error}</div>;
@@ -76,12 +64,6 @@ function Products() {
                   <span className="product-price">${product.price}</span>
                   <span className="product-stock">{product.stock} in stock</span>
                 </div>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(product._id)}
-                >
-                  Delete
-                </button>
               </div>
             </div>
           ))}

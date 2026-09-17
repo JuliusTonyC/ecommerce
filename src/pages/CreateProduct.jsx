@@ -1,22 +1,20 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function CreateProduct() {
-  const navigate = useNavigate();
-
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [image, setImage] = useState('');
   const [stock, setStock] = useState('');
-
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,15 +23,21 @@ function CreateProduct() {
     setLoading(true);
 
     try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('You must be logged in to create a product');
+
       const res = await fetch(`${API_URL}/api/products`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           name,
           description,
           price: Number(price),
           category,
-          image: image || 'https://via.placeholder.com/300',
+          image: image.trim() || undefined,
           stock: Number(stock) || 0,
         }),
       });
@@ -49,7 +53,7 @@ function CreateProduct() {
       setImage('');
       setStock('');
 
-      setTimeout(() => navigate('/products'), 1000);
+      setTimeout(() => navigate('/my-products'), 1000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,7 +62,7 @@ function CreateProduct() {
   };
 
   return (
-    <div className="auth-container" style={{ maxWidth: 600 }}>
+    <div className="auth-container" style={{ maxWidth: 650 }}>
       <h2>Create Product</h2>
 
       {success && <p style={{ color: 'green', textAlign: 'center', marginBottom: 12 }}>{success}</p>}
@@ -66,31 +70,30 @@ function CreateProduct() {
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Product Name</label>
+          <label>Product Name *</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            placeholder="e.g. Wireless Headphones"
+            placeholder="Enter product name"
           />
         </div>
 
         <div className="form-group">
-          <label>Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+          <label>Category *</label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             required
-            placeholder="Describe the product..."
-            rows={4}
-            style={{ width: '100%' }}  /* fallback until CSS loads */
+            placeholder="e.g. Electronics, Clothing..."
           />
         </div>
 
         <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div className="form-group">
-            <label>Price ($)</label>
+            <label>Price ($) *</label>
             <input
               type="number"
               value={price}
@@ -98,30 +101,32 @@ function CreateProduct() {
               required
               min="0"
               step="0.01"
-              placeholder="99.99"
+              placeholder="0.00"
             />
           </div>
 
           <div className="form-group">
-            <label>Stock</label>
+            <label>Stock *</label>
             <input
               type="number"
               value={stock}
               onChange={(e) => setStock(e.target.value)}
+              required
               min="0"
-              placeholder="10"
+              placeholder="0"
             />
           </div>
         </div>
 
         <div className="form-group">
-          <label>Category</label>
-          <input
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+          <label>Description *</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             required
-            placeholder="e.g. Electronics"
+            placeholder="Enter a detailed description of the product..."
+            rows={4}
+            style={{ width: '100%' }}
           />
         </div>
 
@@ -138,13 +143,11 @@ function CreateProduct() {
         <button type="submit" className="auth-btn" disabled={loading}>
           {loading ? 'Creating...' : 'Create Product'}
         </button>
-      </form>
 
-      <p className="auth-link">
-        <button className="action-btn" onClick={() => navigate('/products')} style={{ width: '100%', marginTop: 10 }}>
-          View All Products
-        </button>
-      </p>
+        <Link to="/my-products" className="auth-link" style={{ display: 'block', textAlign: 'center', marginTop: 16 }}>
+          Cancel
+        </Link>
+      </form>
     </div>
   );
 }
